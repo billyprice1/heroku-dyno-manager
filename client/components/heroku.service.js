@@ -2,7 +2,10 @@
 
 angular.module('herokuDynoManagerApp')
    .factory("HerokuApi", function ($resource) {
-      return $resource("/api/heroku/:ctrl/:appId/:dynoId", {}, {
+      return $resource("/api/heroku/:ctrl/:appId/:dynoId", {
+         appId: "@appId",
+         dynoId: "@dynoId"
+      }, {
          apps: {
             method: "POST",
             isArray: true

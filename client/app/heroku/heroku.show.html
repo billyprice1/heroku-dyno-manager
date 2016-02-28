@@ -1,1 +1,9 @@
-<h1>Showing app 10</h1>
+<div>
+   <h1>Dynos</h1>
+
+   <p data-ng-repeat="dyno in heroku.dynos">
+      <code>
+         {{dyno | json}}
+      </code>
+   </p>
+</div>
