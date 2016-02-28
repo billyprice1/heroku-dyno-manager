@@ -32,8 +32,22 @@ exports.dynos = function(req, res) {
       });
 };
 
-// Retstars given dyno.
-exports.restart = function(req, res) {};
+// Restarts a given dyno.
+exports.restart = function(req, res) {
+   var appId = req.params.appId,
+      dynoId = req.params.dynoId;
+
+   HerokuService.restart(appId, dynoId)
+      .once(Event.ERROR, function(err) {
+         return handleError(res, err);
+      })
+      .once(Event.NOT_FOUND, function() {
+         return res.status(404).send("Not found");
+      })
+      .once(Event.SUCCESS, function(resp) {
+         return res.json(resp);
+      });
+};
 
 function handleError(res, err) {
    return res.status(500).send(err);
