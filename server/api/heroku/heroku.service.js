@@ -3,6 +3,7 @@
 var Heroku = require("./heroku.model"),
    request = require("request"),
    async = require("async"),
+   config = require("../../config/environment"),
    Event = require("../../enum/event.enum"),
    EventEmitter = require("events").EventEmitter;
 
@@ -56,6 +57,7 @@ exports.apps = function() {
 exports.authorize = function(code) {
    var tasks = [],
       needsRefresh = false,
+      refreshToken = "",
       emitter = new EventEmitter();
 
    tasks.push(function(cb) {
@@ -68,6 +70,7 @@ exports.authorize = function(code) {
          if (doc && doc.expires <= Date.now()) {
             //token expired, get a new one
             needsRefresh = true;
+            refreshToken = doc.refreshToken;
          }
          return cb(null, doc);
       });
@@ -77,7 +80,7 @@ exports.authorize = function(code) {
       getAccessToken({
          refresh: needsRefresh,
          code: code,
-         refreshToken: doc && doc.refreshToken || null
+         refreshToken: refreshToken || null
       }, function(err, data) {
          if (err) {
             console.log("Error getting accessToken", err);
@@ -126,6 +129,8 @@ exports.authorize = function(code) {
       }
       return emitter.emit(Event.SUCCESS, resp);
    }
+
+   return emitter;
 };
 
 function getAccessToken(options, cb) {
@@ -135,7 +140,7 @@ function getAccessToken(options, cb) {
          json: true
       },
       body = {
-         client_secret: "",
+         client_secret: config.heroku.client_secret,
          grant_type: "authorization_code"
       };
 
@@ -146,14 +151,14 @@ function getAccessToken(options, cb) {
       body.code = options.code;
    }
 
-   req_obj.body = body;
+   req_obj.form = body;
 
    request(req_obj, function(err, resp, body) {
       if (err) {
          return cb(err);
       }
       if (resp.statusCode === 200) {
-         return cb(null, JSON.parse(body));
+         return cb(null, body);
       }
       return cb();
    });

@@ -32,6 +32,11 @@ var all = {
     session: 'heroku-dyno-manager-secret'
   },
 
+   heroku: {
+      client_id: process.env.HEROKU_CLIENT,
+      client_secret: process.env.HEROKU_SECRET
+   },
+
   // List of user roles
   userRoles: ['guest', 'user', 'admin'],
 

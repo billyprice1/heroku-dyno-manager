@@ -12,7 +12,7 @@ module.exports = function(app) {
    // Insert routes below
    app.use('/api/heroku', require('./api/heroku'));
    app.use('/api/users', require('./api/user'));
-
+   app.get("/util/config", require("./util/util.service").getConfig);
    app.use('/auth', require('./auth'));
 
    // All undefined asset or api routes should return a 404
