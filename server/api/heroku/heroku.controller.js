@@ -1,9 +1,21 @@
 'use strict';
 
-var HerokuService = require('./heroku.service');
+var HerokuService = require('./heroku.service'),
+   Event = require("../../enum/event.enum");
 
 // Get list of apps
-exports.apps = function(req, res) {};
+exports.apps = function(req, res) {
+   HerokuService.apps()
+      .once(Event.ERROR, function(err) {
+         return handleError(res, err);
+      })
+      .once(Event.NOT_FOUND, function() {
+         return res.status(404).send("Not found");
+      })
+      .once(Event.SUCCESS, function(resp) {
+         return res.json(resp);
+      });
+};
 
 // Gets a list of dynos for a specific app
 exports.dynos = function(req, res) {};

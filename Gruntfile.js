@@ -222,7 +222,7 @@ module.exports = function (grunt) {
     // Automatically inject Bower components into the app
     wiredep: {
       target: {
-        src: '<%= yeoman.client %>/index.html',
+        src: '<%= yeoman.client %>/home.html',
         ignorePath: '<%= yeoman.client %>/',
         exclude: [/bootstrap-sass-official/, /bootstrap.js/, '/json3/', '/es5-shim/', /bootstrap.css/, /font-awesome.css/ ]
       }
@@ -246,7 +246,7 @@ module.exports = function (grunt) {
     // concat, minify and revision files. Creates configurations in memory so
     // additional tasks can operate on them
     useminPrepare: {
-      html: ['<%= yeoman.client %>/index.html'],
+      html: ['<%= yeoman.client %>/home.html'],
       options: {
         dest: '<%= yeoman.dist %>/public'
       }
@@ -356,7 +356,7 @@ module.exports = function (grunt) {
             'bower_components/**/*',
             'assets/images/{,*/}*.{webp}',
             'assets/fonts/**/*',
-            'index.html'
+            'home.html'
           ]
         }, {
           expand: true,
@@ -485,7 +485,7 @@ module.exports = function (grunt) {
       options: {
 
       },
-      // Inject application script files into index.html (doesn't include bower)
+      // Inject application script files into home.html (doesn't include bower)
       scripts: {
         options: {
           transform: function(filePath) {
@@ -497,7 +497,7 @@ module.exports = function (grunt) {
           endtag: '<!-- endinjector -->'
         },
         files: {
-          '<%= yeoman.client %>/index.html': [
+          '<%= yeoman.client %>/home.html': [
                [
                  
                  '{.tmp,<%= yeoman.client %>}/{app,components}/**/*.js',
@@ -529,7 +529,7 @@ module.exports = function (grunt) {
         }
       },
 
-      // Inject component css into index.html
+      // Inject component css into home.html
       css: {
         options: {
           transform: function(filePath) {
@@ -541,7 +541,7 @@ module.exports = function (grunt) {
           endtag: '<!-- endinjector -->'
         },
         files: {
-          '<%= yeoman.client %>/index.html': [
+          '<%= yeoman.client %>/home.html': [
             '<%= yeoman.client %>/{app,components}/**/*.css'
           ]
         }
@@ -593,7 +593,6 @@ module.exports = function (grunt) {
       'autoprefixer',
       'express:dev',
       'wait',
-      'open',
       'watch'
     ]);
   });

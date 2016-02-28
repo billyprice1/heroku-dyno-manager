@@ -6,8 +6,7 @@ var mongoose = require('mongoose'),
 var HerokuSchema = new Schema({
    accessToken: String,
    expires: Number,
-   refreshToken: String,
-   refreshTokenFetched: Number
+   refreshToken: String
 });
 
 module.exports = mongoose.model('Heroku', HerokuSchema);

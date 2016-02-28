@@ -11,5 +11,6 @@ require('./local/passport').setup(User, config);
 var router = express.Router();
 
 router.use('/local', require('./local'));
+router.use('/heroku', require('./heroku'));
 
 module.exports = router;
