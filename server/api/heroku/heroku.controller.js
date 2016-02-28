@@ -18,7 +18,19 @@ exports.apps = function(req, res) {
 };
 
 // Gets a list of dynos for a specific app
-exports.dynos = function(req, res) {};
+exports.dynos = function(req, res) {
+   var appId = req.params.appId;
+   HerokuService.dynos(appId)
+      .once(Event.ERROR, function(err) {
+         return handleError(res, err);
+      })
+      .once(Event.NOT_FOUND, function() {
+         return res.status(404).send("Not found");
+      })
+      .once(Event.SUCCESS, function(resp) {
+         return res.json(resp);
+      });
+};
 
 // Retstars given dyno.
 exports.restart = function(req, res) {};

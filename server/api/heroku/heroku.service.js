@@ -7,7 +7,7 @@ var Heroku = require("./heroku.model"),
    Event = require("../../enum/event.enum"),
    EventEmitter = require("events").EventEmitter;
 
-exports.apps = function() {
+exports.apps = function(url) {
    var options = {
          url: 'https://api.heroku.com/apps',
          method: 'GET',
@@ -34,6 +34,9 @@ exports.apps = function() {
       }
       if (resp[0].accessToken) {
          options.headers.Authorization = "Bearer " + resp[0].accessToken;
+         if(url) {
+            options.url = url;
+         }
          request(options, function(err, resp, body) {
             if (err) {
                return emitter.emit(Event.ERROR, err);
@@ -52,6 +55,10 @@ exports.apps = function() {
    });
 
    return emitter;
+};
+
+exports.dynos = function (appId) {
+   return exports.apps('https://api.heroku.com/apps/' + appId + '/dynos');
 };
 
 exports.authorize = function(code) {
