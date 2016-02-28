@@ -1,4 +1,11 @@
 <div ui-view="">
-   My Apps
-   <a ui-sref="main.apps.show({appId: 10})">Go to app</a>
+
+   <h1>Your Apps</h1>
+
+   <p data-ng-repeat="app in heroku.apps">
+      <a ui-sref="main.apps.show({appId: app.id})">{{app.name}}</a>
+      <br/>
+      <a ng-href="{{app.web_url}}">{{app.web_url}}</a>
+   </p>
+
 </div>
