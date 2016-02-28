@@ -58,6 +58,7 @@ exports.authorize = function(code) {
    var tasks = [],
       needsRefresh = false,
       refreshToken = "",
+      hasDocument = false,
       emitter = new EventEmitter();
 
    tasks.push(function(cb) {
@@ -67,28 +68,35 @@ exports.authorize = function(code) {
                err);
             return cb(err);
          }
-         if (doc && doc.expires <= Date.now()) {
-            //token expired, get a new one
-            needsRefresh = true;
-            refreshToken = doc.refreshToken;
+         if (doc) {
+            if(doc.expires <= Date.now()) {
+               //token expired, get a new one
+               needsRefresh = true;
+               refreshToken = doc.refreshToken;
+            }
+            hasDocument = true;
          }
          return cb(null, doc);
       });
    });
 
    tasks.push(function(cb) {
-      getAccessToken({
-         refresh: needsRefresh,
-         code: code,
-         refreshToken: refreshToken || null
-      }, function(err, data) {
-         if (err) {
-            console.log("Error getting accessToken", err);
-            cb(err);
-         } else {
-            cb(null, data);
-         }
-      });
+      if(hasDocument && !needsRefresh) {
+         cb();
+      } else {
+         getAccessToken({
+            refresh: needsRefresh,
+            code: code,
+            refreshToken: refreshToken || null
+         }, function(err, data) {
+            if (err) {
+               console.log("Error getting accessToken", err);
+               cb(err);
+            } else {
+               cb(null, data);
+            }
+         });
+      }
    });
 
    async.series(tasks, function(err, resp) {
