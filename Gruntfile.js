@@ -644,24 +644,25 @@ module.exports = function (grunt) {
     ]);
   });
 
-  grunt.registerTask('build', [
-    'clean:dist',
-    'injector:sass', 
-    'concurrent:dist',
-    'injector',
-    'wiredep',
-    'useminPrepare',
-    'autoprefixer',
-    'ngtemplates',
-    'concat',
-    'ngAnnotate',
-    'copy:dist',
-    'cdnify',
-    'cssmin',
-    'uglify',
-    'rev',
-    'usemin'
-  ]);
+   grunt.registerTask('build', [
+      'clean:dist',
+      'injector:sass',
+      'concurrent:server',
+      'imagemin',
+      'injector',
+      'wiredep',
+      'useminPrepare',
+      'autoprefixer',
+      'ngtemplates',
+      'concat',
+      'ngAnnotate',
+      'copy:dist',
+      'cdnify',
+      'cssmin',
+      'uglify',
+      'rev',
+      'usemin'
+   ]);
 
   grunt.registerTask('default', [
     'newer:jshint',
