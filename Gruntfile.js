@@ -648,7 +648,6 @@ module.exports = function (grunt) {
       'clean:dist',
       'injector:sass',
       'concurrent:server',
-      'imagemin',
       'injector',
       'wiredep',
       'useminPrepare',
