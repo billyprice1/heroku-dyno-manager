@@ -85,6 +85,7 @@ exports.authorize = function(code) {
                //token expired, get a new one
                needsRefresh = true;
                refreshToken = doc.refreshToken;
+               console.log("Access token has expired. Will need to get a new one.");
             }
             hasDocument = true;
          }
@@ -94,6 +95,7 @@ exports.authorize = function(code) {
 
    tasks.push(function(cb) {
       if(hasDocument && !needsRefresh) {
+         console.log("Access token is valid, not fetching a new one.");
          cb();
       } else {
          getAccessToken({
@@ -173,6 +175,8 @@ function getAccessToken(options, cb) {
 
    req_obj.form = body;
 
+   console.log("Fetching new access token with these options:");
+   console.log(req_obj, "\n\n");
    request(req_obj, function(err, resp, body) {
       if (err) {
          return cb(err);
