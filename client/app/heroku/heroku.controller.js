@@ -19,7 +19,13 @@ angular.module('herokuDynoManagerApp')
       });
 
       self.restart = function (dynoId, idx) {
-         self.dynos[idx].restartRequestSent = true;
+         HerokuApi.restart({
+            appId: self.appName,
+            dynoId: dynoId
+         }, function (resp) {
+            console.log(resp);
+            self.dynos[idx].restartRequestSent = true;
+         });
       };
    });
 
