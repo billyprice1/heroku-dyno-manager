@@ -38,13 +38,14 @@ exports.apps = function(url, method) {
             options.url = url;
             options.method = method || "GET"
          }
-         request(options, function(err, resp, body) {
+         request(options, function(err, response, body) {
             if (err) {
                return emitter.emit(Event.ERROR, err);
             }
-            if (resp.statusCode === 200) {
-               return emitter.emit(Event.SUCCESS, JSON.parse(
-                  body));
+            if (response.statusCode === 200) {
+               return emitter.emit(Event.SUCCESS, JSON.parse(body));
+            } else if(response.statusCode === 202) {
+               return emitter.emit(Event.SUCCESS, {msg: "Request accepted"});
             }
             return emitter.emit(Event.NOT_FOUND);
 
