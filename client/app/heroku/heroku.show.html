@@ -1,9 +1,19 @@
 <div>
-   <h1>Dynos</h1>
+   <h1>Dynos ({{heroku.appName}})</h1>
 
-   <p data-ng-repeat="dyno in heroku.dynos">
-      <code>
-         {{dyno | json}}
-      </code>
-   </p>
+   <div class="dynos-list">
+      <div class="dyno-item" data-ng-repeat="dyno in heroku.dynos">
+         <div class="details">
+            <span class="name">{{dyno.name}}</span>
+            <i class="indicator" data-ng-class="{other: dyno.state !== 'up'}"></i>
+         </div>
+         <div class="actions">
+            <a href="javascript:void(0)"
+               data-ng-hide="dyno.restartRequestSent"
+               data-ng-click="heroku.restart(dyno.name, $index)"
+               class="restart">Restart</a>
+            <span data-ng-show="dyno.restartRequestSent" class="pending ng-hide">Restart request sent</span>
+         </div>
+      </div>
+   </div>
 </div>

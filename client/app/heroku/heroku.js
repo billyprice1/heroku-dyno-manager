@@ -9,8 +9,8 @@ angular.module('herokuDynoManagerApp')
             templateUrl: 'app/heroku/heroku.apps.html',
             controller: 'HerokuCtrl as heroku'
          })
-         .state('main.apps.show', {
-            url: '/:appId',
+         .state('main.showapp', {
+            url: 'dynos/:appId',
             authenticate: true,
             templateUrl: 'app/heroku/heroku.show.html',
             controller: 'HerokuAppCtrl as heroku'

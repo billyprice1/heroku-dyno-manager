@@ -2,10 +2,12 @@
 
    <h1>Your Apps</h1>
 
-   <p data-ng-repeat="app in heroku.apps">
-      <a ui-sref="main.apps.show({appId: app.id})">{{app.name}}</a>
-      <br/>
-      <a ng-href="{{app.web_url}}">{{app.web_url}}</a>
-   </p>
-
+   <div class="apps-list">
+      <div class="app-item" data-ng-repeat="app in heroku.apps">
+         <a ui-sref="main.showapp({appId: app.name})">
+            <span class="name">{{app.name}}</span>
+            <span class="url">{{app.web_url}}</span>
+         </a>
+      </div>
+   </div>
 </div>
