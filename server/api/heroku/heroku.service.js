@@ -18,7 +18,7 @@ exports.apps = function (url, method, user) {
       emitter = new EventEmitter();
 
    if (user.accessToken) {
-      options.headers.Authorization = "Bearer " + resp[0].accessToken;
+      options.headers.Authorization = "Bearer " + user.accessToken;
       if(url) {
          options.url = url;
          options.method = method || "GET"
