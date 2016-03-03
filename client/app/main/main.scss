@@ -16,6 +16,17 @@ body {
   }
 }
 
+form {
+  .form-group {
+    label {
+      color: #333;
+    }
+  }
+  .btn {
+    color: #333;
+  }
+}
+
 .navbar-default {
   background-color: #2e3d54;
   border: 0;
