@@ -5,7 +5,7 @@ var HerokuService = require('./heroku.service'),
 
 // Get list of apps
 exports.apps = function(req, res) {
-   HerokuService.apps()
+   HerokuService.apps(req.user)
       .once(Event.ERROR, function(err) {
          return handleError(res, err);
       })
@@ -20,7 +20,7 @@ exports.apps = function(req, res) {
 // Gets a list of dynos for a specific app
 exports.dynos = function(req, res) {
    var appId = req.params.appId;
-   HerokuService.dynos(appId)
+   HerokuService.dynos(appId, req.user)
       .once(Event.ERROR, function(err) {
          return handleError(res, err);
       })
@@ -37,7 +37,7 @@ exports.restart = function(req, res) {
    var appId = req.params.appId,
       dynoId = req.params.dynoId;
 
-   HerokuService.restart(appId, dynoId)
+   HerokuService.restart(appId, dynoId, req.user)
       .once(Event.ERROR, function(err) {
          return handleError(res, err);
       })
