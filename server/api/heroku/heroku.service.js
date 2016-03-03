@@ -7,7 +7,7 @@ var Heroku = require("./heroku.model"),
    Event = require("../../enum/event.enum"),
    EventEmitter = require("events").EventEmitter;
 
-exports.apps = function(url, method, user) {
+exports.apps = function (url, method, user) {
    var options = {
          url: 'https://api.heroku.com/apps',
          method: 'GET',
@@ -15,46 +15,24 @@ exports.apps = function(url, method, user) {
             'Accept': 'application/vnd.heroku+json; version=3'
          }
       },
-      tasks = [],
       emitter = new EventEmitter();
 
-   tasks.push(function(cb) {
-      exports.authorize()
-         .once(Event.ERROR, function(err) {
-            cb(err);
-         })
-         .once(Event.SUCCESS, function(data) {
-            cb(null, data);
-         });
-   });
-
-   async.series(tasks, function(err, resp) {
-      if (err) {
-         return emitter.emit(Event.ERROR, err);
-      }
-      if (resp[0].accessToken) {
-         options.headers.Authorization = "Bearer " + resp[0].accessToken;
-         if(url) {
-            options.url = url;
-            options.method = method || "GET"
+   if (user.accessToken) {
+      options.headers.Authorization = "Bearer " + resp[0].accessToken;
+      request(options, function (err, response, body) {
+         if (err) {
+            return emitter.emit(Event.ERROR, err);
          }
-         request(options, function(err, response, body) {
-            if (err) {
-               return emitter.emit(Event.ERROR, err);
-            }
-            if (response.statusCode === 200) {
-               return emitter.emit(Event.SUCCESS, JSON.parse(body));
-            } else if(response.statusCode === 202) {
-               return emitter.emit(Event.SUCCESS, {msg: "Request accepted"});
-            }
-            return emitter.emit(Event.NOT_FOUND);
-
-         });
-      } else {
-         console.log("No accessToken found!!");
+         if (response.statusCode === 200) {
+            return emitter.emit(Event.SUCCESS, JSON.parse(body));
+         } else if (response.statusCode === 202) {
+            return emitter.emit(Event.SUCCESS, {msg: "Request accepted"});
+         }
          return emitter.emit(Event.NOT_FOUND);
-      }
-   });
+      });
+   } else {
+      return emitter.emit(Event.NOT_FOUND);
+   }
 
    return emitter;
 };
@@ -67,22 +45,22 @@ exports.restart = function (appId, dynoId, user) {
    return exports.apps('https://api.heroku.com/apps/' + appId + '/dynos/' + dynoId, "DELETE");
 };
 
-exports.authorize = function(code) {
+exports.authorize = function (code) {
    var tasks = [],
       needsRefresh = false,
       refreshToken = "",
       hasDocument = false,
       emitter = new EventEmitter();
 
-   tasks.push(function(cb) {
-      Heroku.findOne().lean().exec(function(err, doc) {
+   tasks.push(function (cb) {
+      Heroku.findOne().lean().exec(function (err, doc) {
          if (err) {
             console.log("Error Cannot find the heroku document",
                err);
             return cb(err);
          }
          if (doc) {
-            if(doc.expires <= Date.now()) {
+            if (doc.expires <= Date.now()) {
                //token expired, get a new one
                needsRefresh = true;
                refreshToken = doc.refreshToken;
@@ -94,8 +72,8 @@ exports.authorize = function(code) {
       });
    });
 
-   tasks.push(function(cb) {
-      if(hasDocument && !needsRefresh) {
+   tasks.push(function (cb) {
+      if (hasDocument && !needsRefresh) {
          console.log("Access token is valid, not fetching a new one.");
          cb();
       } else {
@@ -103,7 +81,7 @@ exports.authorize = function(code) {
             refresh: needsRefresh,
             code: code,
             refreshToken: refreshToken || null
-         }, function(err, data) {
+         }, function (err, data) {
             if (err) {
                console.log("Error getting accessToken", err);
                cb(err);
@@ -114,7 +92,7 @@ exports.authorize = function(code) {
       }
    });
 
-   async.series(tasks, function(err, resp) {
+   async.series(tasks, function (err, resp) {
       var doc = resp[0],
          data = resp[1];
       if (err) {
@@ -128,7 +106,7 @@ exports.authorize = function(code) {
                accessToken: data.access_token,
                expires: Date.now() + (data.expires_in * 1000)
             }
-         }, function(err, count) {
+         }, function (err, count) {
             doc.accessToken = data.access_token;
             respond(err, doc);
          });
@@ -178,7 +156,7 @@ function getAccessToken(options, cb) {
 
    console.log("Fetching new access token with these options:");
    console.log(req_obj, "\n\n");
-   request(req_obj, function(err, resp, body) {
+   request(req_obj, function (err, resp, body) {
       if (err) {
          return cb(err);
       }
