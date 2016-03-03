@@ -20,13 +20,4 @@ angular.module('herokuDynoManagerApp')
       $scope.isActive = function (route) {
          return route === $location.path();
       };
-
-      $scope.authHeroku = function () {
-         var url = "https://id.heroku.com/oauth/authorize?";
-         url = url + "client_id=" + AppConfig.heroku.client_id;
-         url = url + "&response_type=code&scope=global";
-         url = url + "&state=" + Date.now();
-
-         window.location.href = url;
-      };
    });
