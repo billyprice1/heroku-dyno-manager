@@ -5,7 +5,7 @@ var HerokuService = require('./heroku.service'),
 
 // Get list of apps
 exports.apps = function(req, res) {
-   HerokuService.apps(req.user)
+   HerokuService.apps(null, null, req.user)
       .once(Event.ERROR, function(err) {
          return handleError(res, err);
       })
