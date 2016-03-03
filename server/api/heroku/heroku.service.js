@@ -19,6 +19,10 @@ exports.apps = function (url, method, user) {
 
    if (user.accessToken) {
       options.headers.Authorization = "Bearer " + resp[0].accessToken;
+      if(url) {
+         options.url = url;
+         options.method = method || "GET"
+      }
       request(options, function (err, response, body) {
          if (err) {
             return emitter.emit(Event.ERROR, err);
@@ -38,11 +42,11 @@ exports.apps = function (url, method, user) {
 };
 
 exports.dynos = function (appId, user) {
-   return exports.apps('https://api.heroku.com/apps/' + appId + '/dynos', "GET");
+   return exports.apps('https://api.heroku.com/apps/' + appId + '/dynos', "GET", user);
 };
 
 exports.restart = function (appId, dynoId, user) {
-   return exports.apps('https://api.heroku.com/apps/' + appId + '/dynos/' + dynoId, "DELETE");
+   return exports.apps('https://api.heroku.com/apps/' + appId + '/dynos/' + dynoId, "DELETE", user);
 };
 
 exports.authorize = function (code) {
