@@ -4,12 +4,15 @@ var User = require("./user.model"),
    EventEmitter = require("events").EventEmitter,
    Event = require("../../enum/event.enum"),
    async = require("async"),
+   crypto = require("crypto"),
    request = require("request");
 
 exports.login = function (email, password) {
    var emitter = new EventEmitter(),
       token,
       tasks = [];
+
+   email = email && email.trim().toLowerCase() || "";
 
    tasks.push(function (cb) {
       var basicDigest = new Buffer(email + ":" + password).toString("base64");
@@ -18,7 +21,7 @@ exports.login = function (email, password) {
             cb(err);
          } else {
             token = authData.access_token.token;
-            cb(err, authData)
+            cb(err, authData);
          }
       });
    });
@@ -42,8 +45,10 @@ exports.login = function (email, password) {
       }
 
       if(userDetails && auth) {
+         var emailHash = crypto.createHash("md5").update(email).digest("hex");
          user =  new User({
             email: email,
+            emailHash: emailHash,
             password: password,
             name: userDetails.name,
             accessToken: auth.access_token.token,
