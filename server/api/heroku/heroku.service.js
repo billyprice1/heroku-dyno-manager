@@ -21,7 +21,7 @@ exports.apps = function (url, method, user, data) {
    if (user.accessToken) {
       options.headers.Authorization = "Bearer " + user.accessToken;
       if(url) {
-         options.url = url;
+         options.url += url;
          options.method = method || "GET"
       }
       if(data) {
@@ -46,23 +46,23 @@ exports.apps = function (url, method, user, data) {
 };
 
 exports.dynos = function (appId, user) {
-   return exports.apps('https://api.heroku.com/apps/' + appId + '/dynos', "GET", user);
+   return exports.apps('/' + appId + '/dynos', "GET", user);
 };
 
 exports.restart = function (appId, dynoId, user) {
-   return exports.apps('https://api.heroku.com/apps/' + appId + '/dynos/' + dynoId, "DELETE", user);
+   return exports.apps('/' + appId + '/dynos/' + dynoId, "DELETE", user);
 };
 
 exports.listCollaborators = function (appId, user) {
-   return exports.apps('https://api.heroku.com/apps/' + appId + '/collaborators', "GET", user);
+   return exports.apps('/' + appId + '/collaborators', "GET", user);
 };
 
 exports.getCollaborator = function (appId, collaboratorId, user) {
-   return exports.apps('https://api.heroku.com/apps/' + appId + '/collaborators/' + collaboratorId, "GET", user);
+   return exports.apps('/' + appId + '/collaborators/' + collaboratorId, "GET", user);
 };
 
 exports.removeCollaborator = function (appId, collaboratorId, user) {
-   return exports.apps('https://api.heroku.com/apps/' + appId + '/collaborators/' + collaboratorId, "DELETE", user);
+   return exports.apps('/' + appId + '/collaborators/' + collaboratorId, "DELETE", user);
 };
 
 exports.createCollaborator = function (appId, emailId, user) {
@@ -70,5 +70,9 @@ exports.createCollaborator = function (appId, emailId, user) {
       silent: false,
       user: emailId
    };
-   return exports.apps('https://api.heroku.com/apps/' + appId + '/collaborators', "POST", user, data);
+   return exports.apps('/' + appId + '/collaborators', "POST", user, data);
+};
+
+exports.getConfig = function (appId, user) {
+   return exports.apps('/' + appId + '/config-vars', "GET", user);
 };

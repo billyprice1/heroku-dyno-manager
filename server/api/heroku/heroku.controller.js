@@ -98,12 +98,28 @@ exports.removeCollaborator = function(req, res) {
       });
 };
 
-// Gets single collaborators for a specific app
+// creates a new collaborator
 exports.createCollaborator = function(req, res) {
-   var appId = req.body.appId,
+   var appId = req.params.appId,
       emailId = req.body.emailId;
 
    HerokuService.createCollaborator(appId, emailId, req.user)
+      .once(Event.ERROR, function(err) {
+         return handleError(res, err);
+      })
+      .once(Event.NOT_FOUND, function() {
+         return res.status(404).send("Not found");
+      })
+      .once(Event.SUCCESS, function(resp) {
+         return res.json(resp);
+      });
+};
+
+// Gets the config variables for a specific app
+exports.getConfig = function(req, res) {
+   var appId = req.body.appId;
+
+   HerokuService.getConfig(appId, req.user)
       .once(Event.ERROR, function(err) {
          return handleError(res, err);
       })
