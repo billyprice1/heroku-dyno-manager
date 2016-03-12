@@ -7,12 +7,13 @@ var Heroku = require("./heroku.model"),
    Event = require("../../enum/event.enum"),
    EventEmitter = require("events").EventEmitter;
 
-exports.apps = function (url, method, user) {
+exports.apps = function (url, method, user, data) {
    var options = {
          url: 'https://api.heroku.com/apps',
          method: 'GET',
          headers: {
-            'Accept': 'application/vnd.heroku+json; version=3'
+            'Accept': 'application/vnd.heroku+json; version=3',
+            'Content-Type': 'application/json'
          }
       },
       emitter = new EventEmitter();
@@ -22,6 +23,9 @@ exports.apps = function (url, method, user) {
       if(url) {
          options.url = url;
          options.method = method || "GET"
+      }
+      if(data) {
+         options.body = data;
       }
       request(options, function (err, response, body) {
          if (err) {
@@ -59,4 +63,12 @@ exports.getCollaborator = function (appId, collaboratorId, user) {
 
 exports.removeCollaborator = function (appId, collaboratorId, user) {
    return exports.apps('https://api.heroku.com/apps/' + appId + '/collaborators/' + collaboratorId, "DELETE", user);
+};
+
+exports.createCollaborator = function (appId, emailId, user) {
+   var data = {
+      silent: false,
+      user: emailId
+   };
+   return exports.apps('https://api.heroku.com/apps/' + appId + '/collaborators', "POST", user, data);
 };
