@@ -56,3 +56,7 @@ exports.listCollaborators = function (appId, user) {
 exports.getCollaborator = function (appId, collaboratorId, user) {
    return exports.apps('https://api.heroku.com/apps/' + appId + '/collaborators/' + collaboratorId, "GET", user);
 };
+
+exports.removeCollaborator = function (appId, collaboratorId, user) {
+   return exports.apps('https://api.heroku.com/apps/' + appId + '/collaborators/' + collaboratorId, "DELETE", user);
+};

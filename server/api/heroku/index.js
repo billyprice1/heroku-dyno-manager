@@ -12,5 +12,6 @@ router.post('/restart/:appId/:dynoId', auth.isAuthenticated(), controller.restar
 
 router.post("/collaborators/list/:appId", auth.isAuthenticated(), controller.listCollaborators);
 router.post("/collaborators/show/:appId/:collaboratorId", auth.isAuthenticated(), controller.getCollaborator);
+router.post("/collaborators/remove/:appId/:collaboratorId", auth.isAuthenticated(), controller.removeCollaborator);
 
 module.exports = router;
