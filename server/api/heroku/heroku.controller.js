@@ -64,6 +64,23 @@ exports.listCollaborators = function(req, res) {
       });
 };
 
+// Gets single collaborators for a specific app
+exports.getCollaborator = function(req, res) {
+   var appId = req.params.appId,
+      collaboratorId = req.params.collaboratorId;
+
+   HerokuService.getCollaborator(appId, collaboratorId, req.user)
+      .once(Event.ERROR, function(err) {
+         return handleError(res, err);
+      })
+      .once(Event.NOT_FOUND, function() {
+         return res.status(404).send("Not found");
+      })
+      .once(Event.SUCCESS, function(resp) {
+         return res.json(resp);
+      });
+};
+
 function handleError(res, err) {
    return res.status(500).send(err);
 }

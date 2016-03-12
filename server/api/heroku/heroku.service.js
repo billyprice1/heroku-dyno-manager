@@ -52,3 +52,7 @@ exports.restart = function (appId, dynoId, user) {
 exports.listCollaborators = function (appId, user) {
    return exports.apps('https://api.heroku.com/apps/' + appId + '/collaborators', "GET", user);
 };
+
+exports.getCollaborator = function (appId, collaboratorId, user) {
+   return exports.apps('https://api.heroku.com/apps/' + appId + '/collaborators/' + collaboratorId, "GET", user);
+};
