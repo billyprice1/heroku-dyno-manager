@@ -130,12 +130,30 @@ exports.getConfig = function(req, res) {
          return res.json(resp);
       });
 };
+
 // Sets the config variables for a specific app
 exports.setConfig = function(req, res) {
    var appId = req.params.appId,
       config = req.body.config;
 
    HerokuService.setConfigVar(appId, config, req.user)
+      .once(Event.ERROR, function(err) {
+         return handleError(res, err);
+      })
+      .once(Event.NOT_FOUND, function() {
+         return res.status(404).send("Not found");
+      })
+      .once(Event.SUCCESS, function(resp) {
+         return res.json(resp);
+      });
+};
+
+// Removes the given config variables for a specific app
+exports.removeConfig = function(req, res) {
+   var appId = req.params.appId,
+      config = req.body.config;
+
+   HerokuService.removeConfigVar(appId, config, req.user)
       .once(Event.ERROR, function(err) {
          return handleError(res, err);
       })
