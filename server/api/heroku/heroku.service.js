@@ -48,3 +48,7 @@ exports.dynos = function (appId, user) {
 exports.restart = function (appId, dynoId, user) {
    return exports.apps('https://api.heroku.com/apps/' + appId + '/dynos/' + dynoId, "DELETE", user);
 };
+
+exports.listCollaborators = function (appId, user) {
+   return exports.apps('https://api.heroku.com/apps/' + appId + '/collaborators', "GET", user);
+};
