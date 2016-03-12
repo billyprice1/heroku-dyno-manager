@@ -11,6 +11,7 @@ router.post('/dynos/:appId', auth.isAuthenticated(), controller.dynos);
 router.post('/restart/:appId/:dynoId', auth.isAuthenticated(), controller.restart);
 
 router.post("/config/list/:appId", auth.isAuthenticated(), controller.getConfig);
+router.post("/config/create/:appId", auth.isAuthenticated(), controller.setConfig);
 
 router.post("/collaborators/list/:appId", auth.isAuthenticated(), controller.listCollaborators);
 router.post("/collaborators/create/:appId", auth.isAuthenticated(), controller.createCollaborator);

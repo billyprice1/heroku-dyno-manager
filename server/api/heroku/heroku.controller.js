@@ -117,9 +117,25 @@ exports.createCollaborator = function(req, res) {
 
 // Gets the config variables for a specific app
 exports.getConfig = function(req, res) {
-   var appId = req.body.appId;
+   var appId = req.params.appId;
 
    HerokuService.getConfig(appId, req.user)
+      .once(Event.ERROR, function(err) {
+         return handleError(res, err);
+      })
+      .once(Event.NOT_FOUND, function() {
+         return res.status(404).send("Not found");
+      })
+      .once(Event.SUCCESS, function(resp) {
+         return res.json(resp);
+      });
+};
+// Sets the config variables for a specific app
+exports.setConfig = function(req, res) {
+   var appId = req.params.appId,
+      config = req.body.config;
+
+   HerokuService.setConfigVar(appId, config, req.user)
       .once(Event.ERROR, function(err) {
          return handleError(res, err);
       })

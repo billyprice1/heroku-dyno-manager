@@ -76,3 +76,13 @@ exports.createCollaborator = function (appId, emailId, user) {
 exports.getConfig = function (appId, user) {
    return exports.apps('/' + appId + '/config-vars', "GET", user);
 };
+
+exports.setConfigVar = function (appId, config, user) {
+   var data = {};
+   for(var i in config) {
+      if(config.hasOwnProperty(i)) {
+         data[i] = config[i];
+      }
+   }
+   return exports.apps('/' + appId + '/config-vars', "PATCH", user, data);
+};
