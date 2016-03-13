@@ -13,8 +13,11 @@ exports.apps = function (req, res, next) {
             if(err) {
                console.log("Cache error:", err);
                return next();
+            } else if(doc) {
+               return res.json(doc.data.value);
+            } else {
+               next();
             }
-            return res.json(doc.data.value);
          });
    } else {
       next();

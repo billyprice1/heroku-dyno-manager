@@ -2,7 +2,7 @@
 
 var express = require('express'),
    auth = require("../../auth/auth.service"),
-   CacheController = require("./cache.model"),
+   CacheController = require("./cache.controller"),
    controller = require('./heroku.controller');
 
 var router = express.Router();

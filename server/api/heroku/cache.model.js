@@ -5,7 +5,7 @@ var mongoose = require('mongoose'),
    Schema = mongoose.Schema;
 
 var CacheSchema = new Schema({
-   createdAt: {type: Date, expires: '30m', default: Date},
+   createdAt: {type: Date, expires: 60*60*24, default: Date},
    type: {type: String, enum: CacheEnum.list, default: CacheEnum.types.APPS},
    userToken: String,
    appId: String,
