@@ -4,19 +4,23 @@ var Cache = require("./cache.model"),
    CacheEnum = require("../../enum/cache.enum");
 
 function checkCache(req, res, next, options) {
-   Cache
-      .findOne(options)
-      .lean()
-      .exec(function (err, doc) {
-         if (err) {
-            console.log("Cache error:", err);
-            return next();
-         } else if (doc) {
-            return res.json(doc.data.value);
-         } else {
-            next();
-         }
-      });
+   if(req.headers.hasOwnProperty("x-hdm-bypass-cache")) {
+      next();
+   } else {
+      Cache
+         .findOne(options)
+         .lean()
+         .exec(function (err, doc) {
+            if (err) {
+               console.log("Cache error:", err);
+               return next();
+            } else if (doc) {
+               return res.json(doc.data.value);
+            } else {
+               next();
+            }
+         });
+   }
 }
 
 exports.apps = function (req, res, next) {
