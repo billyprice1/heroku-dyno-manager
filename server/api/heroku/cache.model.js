@@ -6,6 +6,7 @@ var mongoose = require('mongoose'),
 var CacheSchema = new Schema({
    createdAt: {type: Date, expires: '30m', default: Date},
    type: {type: String},
+   userToken: String,
    appId: String,
    data: {}
 });
