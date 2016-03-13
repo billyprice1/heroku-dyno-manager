@@ -44,3 +44,24 @@ exports.collaborators = function (req, res, next) {
       next();
    }
 };
+
+exports.config = function (req, res, next) {
+   var appId = req.params.appId;
+   if (appId) {
+      Cache
+         .findOne({appId: appId, type: CacheEnum.types.CONFIG})
+         .lean()
+         .exec(function (err, doc) {
+            if(err) {
+               console.log("Cache error:", err);
+               return next();
+            } else if(doc) {
+               return res.json(doc.data.value);
+            } else {
+               next();
+            }
+         });
+   } else {
+      next();
+   }
+};
