@@ -1,11 +1,12 @@
 'use strict';
 
 var HerokuService = require('./heroku.service'),
-   Event = require("../../enum/event.enum");
+   Event = require("../../enum/event.enum"),
+   CacheEnum = require("../../enum/cache.enum");
 
 // Get list of apps
 exports.apps = function(req, res) {
-   HerokuService.apps(null, null, req.user)
+   HerokuService.apps(null, null, req.user, null, CacheEnum.types.APPS)
       .once(Event.ERROR, function(err) {
          return handleError(res, err);
       })

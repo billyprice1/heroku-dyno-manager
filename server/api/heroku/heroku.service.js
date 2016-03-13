@@ -5,9 +5,10 @@ var Heroku = require("./heroku.model"),
    async = require("async"),
    config = require("../../config/environment"),
    Event = require("../../enum/event.enum"),
+   CacheEnum = require("../../enum/cache.enum"),
    EventEmitter = require("events").EventEmitter;
 
-exports.apps = function (url, method, user, data) {
+exports.apps = function (url, method, user, data, cacheType) {
    var options = {
          url: 'https://api.heroku.com/apps',
          method: 'GET',
@@ -54,7 +55,7 @@ exports.restart = function (appId, dynoId, user) {
 };
 
 exports.listCollaborators = function (appId, user) {
-   return exports.apps('/' + appId + '/collaborators', "GET", user);
+   return exports.apps('/' + appId + '/collaborators', "GET", user, null, CacheEnum.types.COLLABORATORS);
 };
 
 exports.getCollaborator = function (appId, collaboratorId, user) {
@@ -74,7 +75,7 @@ exports.createCollaborator = function (appId, emailId, user) {
 };
 
 exports.getConfig = function (appId, user) {
-   return exports.apps('/' + appId + '/config-vars', "GET", user);
+   return exports.apps('/' + appId + '/config-vars', "GET", user, null, CacheEnum.types.CONFIG);
 };
 
 exports.setConfigVar = function (appId, config, user) {
