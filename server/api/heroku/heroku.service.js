@@ -5,10 +5,11 @@ var Heroku = require("./heroku.model"),
    async = require("async"),
    config = require("../../config/environment"),
    Event = require("../../enum/event.enum"),
+   Cache = require("./cache.model"),
    CacheEnum = require("../../enum/cache.enum"),
    EventEmitter = require("events").EventEmitter;
 
-exports.apps = function (url, method, user, data, cacheType) {
+exports.apps = function (url, method, user, data, cacheOptions) {
    var options = {
          url: 'https://api.heroku.com/apps',
          method: 'GET',
@@ -21,19 +22,41 @@ exports.apps = function (url, method, user, data, cacheType) {
 
    if (user.accessToken) {
       options.headers.Authorization = "Bearer " + user.accessToken;
-      if(url) {
+      if (url) {
          options.url += url;
          options.method = method || "GET"
       }
-      if(data) {
+      if (data) {
          options.body = data;
       }
       request(options, function (err, response, body) {
+         var _body, newCache, _cache;
          if (err) {
             return emitter.emit(Event.ERROR, err);
          }
          if (response.statusCode === 200) {
-            return emitter.emit(Event.SUCCESS, JSON.parse(body));
+            try {
+               _body = JSON.parse(body);
+               if (cacheOptions && cacheOptions.type) {
+                  _cache = {
+                     data: {value: _body},
+                     userToken: user.accessToken,
+                     type: cacheOptions.type
+                  };
+                  if (cacheOptions.appId) {
+                     _cache["appId"] = cacheOptions.appId;
+                  }
+                  newCache = new Cache(_cache);
+
+                  newCache.save(function (err, doc) {
+                     console.log("Saving cache for", cacheOptions.type, err);
+                  });
+               }
+            } catch (e) {
+               console.log("Error parsing JSON body", typeof body, e);
+               return emitter.emit(Event.SUCCESS, {});
+            }
+            return emitter.emit(Event.SUCCESS, _body);
          } else if (response.statusCode === 202) {
             return emitter.emit(Event.SUCCESS, {msg: "Request accepted"});
          }
@@ -55,7 +78,10 @@ exports.restart = function (appId, dynoId, user) {
 };
 
 exports.listCollaborators = function (appId, user) {
-   return exports.apps('/' + appId + '/collaborators', "GET", user, null, CacheEnum.types.COLLABORATORS);
+   return exports.apps('/' + appId + '/collaborators', "GET", user, null, {
+      type: CacheEnum.types.COLLABORATORS,
+      appId: appId
+   });
 };
 
 exports.getCollaborator = function (appId, collaboratorId, user) {
@@ -75,13 +101,16 @@ exports.createCollaborator = function (appId, emailId, user) {
 };
 
 exports.getConfig = function (appId, user) {
-   return exports.apps('/' + appId + '/config-vars', "GET", user, null, CacheEnum.types.CONFIG);
+   return exports.apps('/' + appId + '/config-vars', "GET", user, null, {
+      type: CacheEnum.types.CONFIG,
+      appId: appId
+   });
 };
 
 exports.setConfigVar = function (appId, config, user) {
    var data = {};
-   for(var i in config) {
-      if(config.hasOwnProperty(i)) {
+   for (var i in config) {
+      if (config.hasOwnProperty(i)) {
          data[i] = config[i];
       }
    }
@@ -90,8 +119,8 @@ exports.setConfigVar = function (appId, config, user) {
 
 exports.removeConfigVar = function (appId, config, user) {
    var data = {};
-   for(var i in config) {
-      if(config.hasOwnProperty(i)) {
+   for (var i in config) {
+      if (config.hasOwnProperty(i)) {
          data[i] = "NULL";
       }
    }
