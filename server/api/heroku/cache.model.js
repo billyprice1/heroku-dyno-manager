@@ -11,4 +11,7 @@ var CacheSchema = new Schema({
    data: {}
 });
 
+CacheSchema.index({appId: 1, type: 1});
+CacheSchema.index({userToken: 1, type: 1});
+
 module.exports = mongoose.model('Cache', CacheSchema);
