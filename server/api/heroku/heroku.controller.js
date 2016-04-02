@@ -184,6 +184,23 @@ exports.releases = function (req, res) {
       });
 };
 
+//Rolls back to a release
+exports.rollbackRelease = function (req, res) {
+   var appId = req.params.appId,
+      releaseId = req.params.releaseId;
+
+   HerokuService.rollbackRelease(appId, releaseId, req.user)
+      .once(Event.ERROR, function (err) {
+         return handleError(res, err);
+      })
+      .once(Event.NOT_FOUND, function () {
+         return res.status(404).send("Not found");
+      })
+      .once(Event.SUCCESS, function (resp) {
+         return res.json(resp);
+      });
+};
+
 function handleError(res, err) {
    return res.status(500).send(err);
 }

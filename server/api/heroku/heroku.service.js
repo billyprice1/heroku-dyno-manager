@@ -88,6 +88,13 @@ exports.releases = function (appId, user) {
    return exports.apps('/' + appId + '/releases', "GET", user);
 };
 
+exports.rollbackRelease = function (appId, releaseId, user) {
+   var data = {
+      release: releaseId
+   };
+   return exports.apps('/' + appId + '/releases', "POST", user, data);
+};
+
 exports.getCollaborator = function (appId, collaboratorId, user) {
    return exports.apps('/' + appId + '/collaborators/' + collaboratorId, "GET", user);
 };
