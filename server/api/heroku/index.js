@@ -20,4 +20,6 @@ router.post("/collaborators/create/:appId", auth.isAuthenticated(), controller.c
 router.post("/collaborators/show/:appId/:collaboratorId", auth.isAuthenticated(), controller.getCollaborator);
 router.post("/collaborators/remove/:appId/:collaboratorId", auth.isAuthenticated(), controller.removeCollaborator);
 
+router.post("/releases/list/:appId", auth.isAuthenticated(), controller.releases);
+
 module.exports = router;

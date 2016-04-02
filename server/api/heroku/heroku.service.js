@@ -84,6 +84,10 @@ exports.listCollaborators = function (appId, user) {
    });
 };
 
+exports.releases = function (appId, user) {
+   return exports.apps('/' + appId + '/releases', "GET", user);
+};
+
 exports.getCollaborator = function (appId, collaboratorId, user) {
    return exports.apps('/' + appId + '/collaborators/' + collaboratorId, "GET", user);
 };
