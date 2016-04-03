@@ -34,7 +34,7 @@ exports.apps = function (url, method, user, data, cacheOptions) {
          if (err) {
             return emitter.emit(Event.ERROR, err);
          }
-         if (response.statusCode === 200) {
+         if (response.statusCode === 200 || (response.statusCode >= 203 && response.statusCode < 299)) {
             try {
                _body = JSON.parse(body);
                if (cacheOptions && cacheOptions.type) {
