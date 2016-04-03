@@ -85,7 +85,10 @@ exports.listCollaborators = function (appId, user) {
 };
 
 exports.releases = function (appId, user) {
-   return exports.apps('/' + appId + '/releases', "GET", user);
+   return exports.apps('/' + appId + '/releases', "GET", user, null, {
+      type: CacheEnum.types.RELEASES,
+      appId: appId
+   });
 };
 
 exports.rollbackRelease = function (appId, releaseId, user) {

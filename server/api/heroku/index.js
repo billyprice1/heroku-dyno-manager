@@ -20,7 +20,7 @@ router.post("/collaborators/create/:appId", auth.isAuthenticated(), controller.c
 router.post("/collaborators/show/:appId/:collaboratorId", auth.isAuthenticated(), controller.getCollaborator);
 router.post("/collaborators/remove/:appId/:collaboratorId", auth.isAuthenticated(), controller.removeCollaborator);
 
-router.post("/releases/list/:appId", auth.isAuthenticated(), controller.releases);
+router.post("/releases/list/:appId", auth.isAuthenticated(), CacheController.releases, controller.releases);
 router.post("/releases/rollback/:appId/:releaseId", auth.isAuthenticated(), controller.rollbackRelease);
 
 module.exports = router;

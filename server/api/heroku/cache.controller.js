@@ -58,3 +58,15 @@ exports.config = function (req, res, next) {
       next();
    }
 };
+
+exports.releases = function (req, res, next) {
+   var appId = req.params.appId;
+   if (appId) {
+      checkCache(req, res, next, {
+         appId: appId,
+         type: CacheEnum.types.RELEASES
+      });
+   } else {
+      next();
+   }
+};

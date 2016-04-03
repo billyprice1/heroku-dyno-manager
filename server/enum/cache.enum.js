@@ -3,9 +3,10 @@
 var types = {
    APPS: "APPS",
    COLLABORATORS: "COLLABORATORS",
-   CONFIG: "CONFIG"
+   CONFIG: "CONFIG",
+   RELEASES: "RELEASES"
 };
 
 exports.types = types;
 
-exports.list = [types.APPS, types.COLLABORATORS, types.CONFIG];
+exports.list = [types.APPS, types.COLLABORATORS, types.CONFIG, types.RELEASES];
