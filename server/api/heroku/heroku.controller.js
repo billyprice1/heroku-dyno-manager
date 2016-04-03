@@ -2,6 +2,7 @@
 
 var HerokuService = require('./heroku.service'),
    Event = require("../../enum/event.enum"),
+   async = require("async"),
    CacheEnum = require("../../enum/cache.enum");
 
 // Get list of apps
@@ -172,6 +173,16 @@ exports.removeConfig = function (req, res) {
 exports.releases = function (req, res) {
    var appId = req.params.appId;
 
+   var reverseOrder = function (data, cb) {
+      var items = [];
+      async.each(data, function (item, iCB) {
+         items.unshift(item);
+         iCB();
+      }, function () {
+         cb(null, items);
+      })
+   };
+
    HerokuService.releases(appId, req.user)
       .once(Event.ERROR, function (err) {
          return handleError(res, err);
@@ -180,7 +191,9 @@ exports.releases = function (req, res) {
          return res.status(404).send("Not found");
       })
       .once(Event.SUCCESS, function (resp) {
-         return res.json(resp);
+         reverseOrder(resp, function (err, items) {
+            return res.json(items);
+         });
       });
 };
 
