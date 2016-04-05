@@ -1,9 +1,10 @@
 'use strict';
 
 var Cache = require("./cache.model"),
-   CacheEnum = require("../../enum/cache.enum");
+   CacheEnum = require("../../enum/cache.enum"),
+   async = require("async");
 
-function checkCache(req, res, next, options) {
+function checkCache(req, res, next, options, transform) {
    if(req.headers.hasOwnProperty("x-hdm-bypass-cache")) {
       next();
    } else {
@@ -15,7 +16,13 @@ function checkCache(req, res, next, options) {
                console.log("Cache error:", err);
                return next();
             } else if (doc) {
-               return res.json(doc.data.value);
+               if(transform && typeof transform === "function") {
+                  transform(doc.data.value, function (err, data) {
+                     return resp.json(data);
+                  });
+               } else {
+                  return res.json(doc.data.value);
+               }
             } else {
                next();
             }
@@ -65,8 +72,18 @@ exports.releases = function (req, res, next) {
       checkCache(req, res, next, {
          appId: appId,
          type: CacheEnum.types.RELEASES
-      });
+      }, transformReleases);
    } else {
       next();
    }
 };
+
+function transformReleases(data) {
+   var items = [];
+   async.each(data, function (item, iCB) {
+      items.unshift(item);
+      iCB();
+   }, function () {
+      cb(null, items);
+   });
+}
