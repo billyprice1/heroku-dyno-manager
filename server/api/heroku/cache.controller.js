@@ -18,7 +18,7 @@ function checkCache(req, res, next, options, transform) {
             } else if (doc) {
                if(transform && typeof transform === "function") {
                   transform(doc.data.value, function (err, data) {
-                     return resp.json(data);
+                     return res.json(data);
                   });
                } else {
                   return res.json(doc.data.value);
