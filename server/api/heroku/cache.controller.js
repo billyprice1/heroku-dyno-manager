@@ -78,7 +78,7 @@ exports.releases = function (req, res, next) {
    }
 };
 
-function transformReleases(data) {
+function transformReleases(data, cb) {
    var items = [];
    async.each(data, function (item, iCB) {
       items.unshift(item);
