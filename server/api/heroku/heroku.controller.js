@@ -3,6 +3,7 @@
 var HerokuService = require('./heroku.service'),
    Event = require("../../enum/event.enum"),
    async = require("async"),
+   crypto = require("crypto"),
    CacheEnum = require("../../enum/cache.enum");
 
 // Get list of apps
@@ -56,6 +57,18 @@ exports.restart = function (req, res) {
 // Gets a list of collaborators for a specific app
 exports.listCollaborators = function (req, res) {
    var appId = req.params.appId;
+
+   var createEmailHashes = function (data, cb) {
+      var items = [];
+      async.each(data, function (d, iCB) {
+         d.emailHash = crypto.createHash("md5").update(d.user.email).digest("hex");
+         items.push(d);
+         iCB();
+      }, function () {
+         cb(null, items);
+      });
+   };
+
    HerokuService.listCollaborators(appId, req.user)
       .once(Event.ERROR, function (err) {
          return handleError(res, err);
@@ -64,7 +77,9 @@ exports.listCollaborators = function (req, res) {
          return res.status(404).send("Not found");
       })
       .once(Event.SUCCESS, function (resp) {
-         return res.json(resp);
+         createEmailHashes(resp, function (err, data) {
+            return res.json(data);
+         });
       });
 };
 
