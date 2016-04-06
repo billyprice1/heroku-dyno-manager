@@ -57,7 +57,7 @@ exports.apps = function (url, method, user, data, cacheOptions) {
                }
             } catch (e) {
                console.log("Error parsing JSON body", typeof body, e);
-               return emitter.emit(Event.SUCCESS, {});
+               return emitter.emit(Event.SUCCESS, body);
             }
             return emitter.emit(Event.SUCCESS, _body);
          }
