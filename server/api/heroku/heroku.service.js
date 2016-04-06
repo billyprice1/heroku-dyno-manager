@@ -28,13 +28,16 @@ exports.apps = function (url, method, user, data, cacheOptions) {
       }
       if (data) {
          options.body = data;
+         options.json = true;
       }
       request(options, function (err, response, body) {
          var _body, newCache, _cache;
          if (err) {
             return emitter.emit(Event.ERROR, err);
          }
-         if (response.statusCode === 200 || (response.statusCode >= 203 && response.statusCode < 299)) {
+         if (response.statusCode === 202) {
+            return emitter.emit(Event.SUCCESS, {msg: "Request accepted"});
+         } else if (response.statusCode >= 200 && response.statusCode < 299) {
             try {
                _body = JSON.parse(body);
                if (cacheOptions && cacheOptions.type) {
@@ -57,8 +60,6 @@ exports.apps = function (url, method, user, data, cacheOptions) {
                return emitter.emit(Event.SUCCESS, {});
             }
             return emitter.emit(Event.SUCCESS, _body);
-         } else if (response.statusCode === 202) {
-            return emitter.emit(Event.SUCCESS, {msg: "Request accepted"});
          }
          return emitter.emit(Event.NOT_FOUND);
       });
