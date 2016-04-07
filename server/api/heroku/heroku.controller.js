@@ -145,7 +145,7 @@ exports.getConfig = function (req, res) {
          iCB();
       }, function () {
          cb(null, items);
-      })
+      });
    };
 
    HerokuService.getConfig(appId, req.user)
@@ -156,7 +156,9 @@ exports.getConfig = function (req, res) {
          return res.status(404).send("Not found");
       })
       .once(Event.SUCCESS, function (resp) {
+         console.log(resp);
          convertToArray(resp, function (err, data) {
+            console.log(data);
             return res.json(data);
          })
       });

@@ -60,7 +60,7 @@ exports.config = function (req, res, next) {
       checkCache(req, res, next, {
          appId: appId,
          type: CacheEnum.types.CONFIG
-      });
+      }, transformConfig);
    } else {
       next();
    }
@@ -82,6 +82,16 @@ function transformReleases(data, cb) {
    var items = [];
    async.each(data, function (item, iCB) {
       items.unshift(item);
+      iCB();
+   }, function () {
+      cb(null, items);
+   });
+}
+
+function transformConfig(data, cb) {
+   var items = [];
+   async.forEachOf(data, function (val, key, iCB) {
+      items.push({key: key, value: val});
       iCB();
    }, function () {
       cb(null, items);
