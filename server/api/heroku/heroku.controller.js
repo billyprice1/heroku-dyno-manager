@@ -138,6 +138,16 @@ exports.createCollaborator = function (req, res) {
 exports.getConfig = function (req, res) {
    var appId = req.params.appId;
 
+   var convertToArray = function (data, cb) {
+      var items = [];
+      async.forEachOf(data, function (val, key, iCB) {
+         items.push({key: key, value: val});
+         iCB();
+      }, function () {
+         cb(null, items);
+      })
+   };
+
    HerokuService.getConfig(appId, req.user)
       .once(Event.ERROR, function (err) {
          return handleError(res, err);
@@ -146,7 +156,9 @@ exports.getConfig = function (req, res) {
          return res.status(404).send("Not found");
       })
       .once(Event.SUCCESS, function (resp) {
-         return res.json(resp);
+         convertToArray(resp, function (err, data) {
+            return res.json(data);
+         })
       });
 };
 
