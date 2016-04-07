@@ -124,20 +124,20 @@ exports.getConfig = function (appId, user) {
 
 exports.setConfigVar = function (appId, config, user) {
    var data = {};
-   for (var i in config) {
-      if (config.hasOwnProperty(i)) {
-         data[i] = config[i];
-      }
-   }
-   return exports.apps('/' + appId + '/config-vars', "PATCH", user, data);
+   async.each(config, function (item, cb) {
+      data[item.key] = item.value;
+      cb();
+   }, function () {
+      return exports.apps('/' + appId + '/config-vars', "PATCH", user, data);
+   });
 };
 
 exports.removeConfigVar = function (appId, config, user) {
    var data = {};
-   for (var i in config) {
-      if (config.hasOwnProperty(i)) {
-         data[i] = "NULL";
-      }
-   }
-   return exports.apps('/' + appId + '/config-vars', "PATCH", user, data);
+   async.each(config, function (item, cb) {
+      data[item.key] = item.value;
+      cb();
+   }, function () {
+      return exports.apps('/' + appId + '/config-vars', "PATCH", user, data);
+   });
 };
