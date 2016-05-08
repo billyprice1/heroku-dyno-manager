@@ -16,7 +16,7 @@ function checkCache(req, res, next, options, transform) {
                console.log("Cache error:", err);
                return next();
             } else if (doc) {
-               if(transform && typeof transform === "function") {
+               if(transform && typeof transform === "function" && doc.data) {
                   transform(doc.data.value, function (err, data) {
                      return res.json(data);
                   });
