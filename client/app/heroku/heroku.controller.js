@@ -1,33 +1,36 @@
 'use strict';
 
 angular.module('herokuDynoManagerApp')
-   .controller("HerokuCtrl", function (HerokuApi) {
-      var self = this;
+  .controller("HerokuCtrl", function (HerokuApi) {
+    var self = this;
 
-      HerokuApi.apps({}, function (resp) {
-         self.apps = resp;
+    HerokuApi.apps({}, function (resp) {
+      self.apps = resp;
+    });
+  })
+  .controller("HerokuAppCtrl", function (HerokuApi, $stateParams) {
+    var self = this;
+
+    self.appName = $stateParams.appId;
+    HerokuApi.dynos({
+      appId: self.appName
+    }, function (resp) {
+      resp.forEach(function (dyno) {
+        dyno.created_at = moment(dyno.created_at).fromNow();
       });
-   })
-   .controller("HerokuAppCtrl", function (HerokuApi, $stateParams) {
-      var self = this;
+      self.dynos = resp;
+    });
 
-      self.appName = $stateParams.appId;
-      HerokuApi.dynos({
-         appId: self.appName
+    self.restart = function (dynoId, idx) {
+      HerokuApi.restart({
+        appId: self.appName,
+        dynoId: dynoId
       }, function (resp) {
-         self.dynos = resp;
+        console.log(resp);
+        self.dynos[idx].restartRequestSent = true;
       });
-
-      self.restart = function (dynoId, idx) {
-         HerokuApi.restart({
-            appId: self.appName,
-            dynoId: dynoId
-         }, function (resp) {
-            console.log(resp);
-            self.dynos[idx].restartRequestSent = true;
-         });
-      };
-   });
+    };
+  });
 
 
 /*

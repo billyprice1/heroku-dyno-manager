@@ -79,6 +79,11 @@ form {
       color: #eee;
       font-weight: 300;
     }
+    span.time {
+      float: right;
+      margin-right: 30px;
+      padding: 8px 0;
+    } 
     .indicator {
       position: absolute;
       right: 15px;
@@ -94,9 +99,6 @@ form {
       }
     }
 
-    .details {
-
-    }
     .actions {
       background-color: #eee;
       padding: 0;

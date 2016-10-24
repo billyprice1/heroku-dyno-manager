@@ -5,6 +5,7 @@
       <div class="dyno-item" data-ng-repeat="dyno in heroku.dynos">
          <div class="details">
             <span class="name">{{dyno.name}}</span>
+            <span class="time">{{dyno.created_at}}</span>
             <i class="indicator" data-ng-class="{other: dyno.state !== 'up'}"></i>
          </div>
          <div class="actions">
